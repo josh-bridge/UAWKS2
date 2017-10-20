@@ -1,7 +1,18 @@
-;;                                                                  ;;
-;;    See Readme.txt for info on installation and customization     ;;
-;;                                                                  ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;                                                                           ;;
+;;                 Unofficial Apple Wireless Keyboard Support                ;;
+;;                       http://code.google.com/p/uawks/                     ;;
+;;                                                                           ;;
+;;                            Version 2008.09.17                             ;;
+;;                                                                           ;;
+;;                            by Brian Jorgensen                             ;;
+;;                   (based on work by Leon, Veil and Micha)                 ;;
+;;                                                                           ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;                                                                           ;;
+;;         See Readme.txt for info on installation and customization         ;;
+;;                                                                           ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
 SetWorkingDir %A_ScriptDir%

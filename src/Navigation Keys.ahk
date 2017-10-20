@@ -1,3 +1,14 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;                                                                           ;;
+;;                 Unofficial Apple Wireless Keyboard Support                ;;
+;;                       http://code.google.com/p/uawks/                     ;;
+;;                                                                           ;;
+;;                            Version 2008.09.17                             ;;
+;;                                                                           ;;
+;;                            by Brian Jorgensen                             ;;
+;;                   (based on work by Leon, Veil and Micha)                 ;;
+;;                                                                           ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
 ;; {Apple Fn Key}-{Arrow Keys} --> {Home, End, PgUp, PgDn}

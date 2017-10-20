@@ -1,3 +1,14 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;                                                                           ;;
+;;                 Unofficial Apple Wireless Keyboard Support                ;;
+;;                       http://code.google.com/p/uawks/                     ;;
+;;                                                                           ;;
+;;                            Version 2008.09.17                             ;;
+;;                                                                           ;;
+;;                            by Brian Jorgensen                             ;;
+;;                   (based on work by Leon, Veil and Micha)                 ;;
+;;                                                                           ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
 ;;
@@ -25,6 +36,19 @@ FnKeyCall(NormalAction, FnActionCall, FnArgs = "", FnActionIsDefault = false)
         %FnActionCall%(FnArgs)
 	}
 }
+
+EjectKeyDown() {
+	global 
+	SetKeyDelay, -1
+	Send {Delete Down}
+}
+
+EjectKeyUp() {
+	global
+	SetKeyDelay, -1
+	Send {Delete Up}
+}
+
 
 
 ;;
@@ -78,32 +102,62 @@ PreferenceKeyFnUp(normalKey, pref) {
 
 VolumeMute(dummyVar="") {
     Send {Volume_Mute}
+	
+	if (OptimizeForWindowsVista) {
+		Return
+	}
+	
     GoSub, ProgressOff
     ShowVolume()
 }
 
 VolumeDown(dummyVar="") {
     global
+	
+	if (OptimizeForWindowsVista) {
+        if (dummyVar!="") {
+            Send {Volume_Down %dummyVar%}
+        } else {
+            Send {Volume_Down %VolumeDownRate%}
+        }
+		Return
+	}
+	
     SoundSet, -%VolumeDownRate%, Master, Volume
 	if (SyncWaveVolumeToMasterVolume) {
 		SoundGet, MasterVolume, Master, Volume
 		SoundSet, MasterVolume, Wave, Volume
 	}
-    ShowVolume()
+    ;ShowVolume()
 }
 
 VolumeUp(dummyVar="") {
     global
+	
+	if (OptimizeForWindowsVista) {
+        if (dummyVar!="") {
+            Send {Volume_Up %dummyVar%}
+        } else {
+            Send {Volume_Up %VolumeUpRate%}
+        }
+		Return
+	}
+	
     SoundSet, +%VolumeUpRate%, Master, Volume
 	if (SyncWaveVolumeToMasterVolume) {
 		SoundGet, MasterVolume, Master, Volume
 		SoundSet, MasterVolume, Wave, Volume
 	}
-    ShowVolume()
+    ;ShowVolume()
 }
 
 VolumeSet(NewVolume, UnMute = false) {
 	global
+	
+	if (OptimizeForWindowsVista) {
+		Return
+	}
+	
     SoundSet, %NewVolume%, Master, Volume
 	if (SyncWaveVolumeToMasterVolume) {
 		SoundSet, %NewVolume%, Wave, Volume
@@ -116,7 +170,7 @@ VolumeSet(NewVolume, UnMute = false) {
             GoSub, ProgressOff
         }
     }
-    ShowVolume()
+    ;ShowVolume()
 }
 
 ProgressOff:
@@ -128,7 +182,11 @@ Return
 
 ShowVolume() {
     global
-
+	
+	if (OptimizeForWindowsVista) {
+		Return
+	}
+	
     SoundGet, MasterVolume, Master, Volume
     SoundGet, WaveVolume, Wave, Volume
     

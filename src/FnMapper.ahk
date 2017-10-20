@@ -1,3 +1,14 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;                                                                           ;;
+;;                 Unofficial Apple Wireless Keyboard Support                ;;
+;;                       http://code.google.com/p/uawks/                     ;;
+;;                                                                           ;;
+;;                            Version 2008.09.17                             ;;
+;;                                                                           ;;
+;;                            by Brian Jorgensen                             ;;
+;;                   (based on work by Leon, Veil and Micha)                 ;;
+;;                                                                           ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
 ;; The code below is slightly modified from the original
@@ -45,21 +56,20 @@ nRC := DllCall("AutohotkeyRemoteControl\RegisterDevice", INT, EditUsage, INT, Ed
 WinHide, FnMapper
 
 ; This function is called, when a WM_INPUT-msg from a device is received
-InputMsg(wParam, lParam, msg, hwnd) 
+InputMsg(wParam, lParam, msg, hwnd)
 {
   DeviceNr = -1
   nRC := DllCall("AutohotkeyRemoteControl\GetWM_INPUTDataType", UINT, wParam, UINT, lParam, "INT *", DeviceNr, "Cdecl UInt")
-  if (errorlevel <> 0) || (nRC == 0xFFFFFFFF) 
+  if (errorlevel <> 0) || (nRC == 0xFFFFFFFF)
   {
   	MsgBox GetWM_INPUTHIDData fehlgeschlagen. Errorcode: %errorlevel%
-  	goto cleanup
   }
   ;Tooltip, %DeviceNr%
   ifequal, nRC, 2
   {
     ProcessHIDData(wParam, lParam)
   }
-  else 
+  else
   {
   	MsgBox, Error - no HID data
   }
@@ -70,7 +80,8 @@ ProcessHIDData(wParam, lParam)
 {
 	; Make sure this variable retains its value outside this function
 	global FnKeyPressed
-	
+  global EjectKeyPressed
+
   DataSize = 5000
 	VarSetCapacity(RawData, %DataSize%, 0)
 	RawData = 1
@@ -81,23 +92,23 @@ ProcessHIDData(wParam, lParam)
   ; Use the line below to check where an event was sent from,
   ; when using this code for a new HID device DeviceNumber :=
   ; DllCall("AutohotkeyRemoteControl\ GetNumberFromHandle",
-  ; UINT, nHandle, "Cdecl UInt") 
+  ; UINT, nHandle, "Cdecl UInt")
 
   ;FirstValue := NumGet(RawData, 0,"UChar") ; something to do
   ; with the bits, not really relevant here
   KeyStatus := NumGet(RawData, 1, "UChar")
-  
+
   ;MsgBox, Keystatus: %KeyStatus%
-  
+
   ; Filter the correct bit, so that it corresponds to the key in question
   ; Add another Transform for a new key
-  
+
   ; Filter bit 5 (Fn key)
   Transform, FnValue, BitAnd, 16, KeyStatus
-  
+
   ; Filter bit 4 (Eject key)
   Transform, EjectValue, BitAnd, 8, KeyStatus
-   
+
   if (FnValue = 16) {
   	; Fn is pressed
 		FnKeyPressed := true
@@ -105,23 +116,27 @@ ProcessHIDData(wParam, lParam)
     ; Fn is released
 		FnKeyPressed := false
   }
-  
-  if (EjectValue = 8) {
-  	; Eject is pressed
-  	; Set timeout of 1 second to prevent accidental keypresses
-		SetTimer, ejectDrive, 1000
-  } else {
-  	; If the Eject button is let go within the second it will
-	; disable the timer and skip the ejectDrive function
-		SetTimer, ejectDrive, Off
-  }
-  
-} ; END: ProcessHIDData
 
+  if (EjectValue = 8) {
+    EjectKeyPressed := true
+    ;EjectKeyDown()
+  } else {
+    EjectKeyPressed := false
+    ;EjectKeyUp()
+  }
+
+  if (EjectKeyPressed = true) {
+    Send {Del down}
+  } else {
+    Send {Del up}
+  }
+
+} ; END: ProcessHIDData
 ; If there was an error retrieving the HID data, cleanup
+
 cleanup:
-	DllCall("FreeLibrary", "UInt", hModule)
-	ExitApp
+  DllCall("FreeLibrary", "UInt", hModule)
+  ExitApp
 
 ; Eject with a delay, Apple style
 ejectDrive:
@@ -133,4 +148,3 @@ ejectDrive:
 	    Drive, Eject,, 1
 	Return
 Return
-
